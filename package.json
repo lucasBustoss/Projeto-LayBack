@@ -7,6 +7,8 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@types/date-fns": "^2.6.0",
+    "date-fns": "^2.30.0",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "module-alias": "^2.2.3",
