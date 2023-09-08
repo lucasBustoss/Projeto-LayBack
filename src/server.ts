@@ -1,3 +1,4 @@
+import './config/module-alias'
 import * as dotenv from 'dotenv';
 
 const path = '.env';
@@ -10,7 +11,7 @@ import mongoose from 'mongoose'
 
 const app = express();
 
-app.use(routes);
+app.use('/api', routes);
 
 mongoose.connect(process.env.MONGO_URL)
   .then(async () => {
