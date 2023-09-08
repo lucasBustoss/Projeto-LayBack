@@ -1,7 +1,9 @@
+import fixtureRouter from '@/routes/fixtures.routes'
+
 import { Router } from 'express';
 
 const routes = Router();
 
-routes.get('/', (request, response) => response.json({ message: 'Hello LayBack!' }))
+routes.use('/fixtures', fixtureRouter)
 
 export default routes;
