@@ -1,10 +1,19 @@
+import * as dotenv from 'dotenv';
+
+const path = '.env';
+dotenv.config({ path });
+
 import express from 'express'
 import routes from './routes'
+
+import mongoose from 'mongoose'
 
 const app = express();
 
 app.use(routes);
 
-app.listen(3000, () => {
-  console.log('Server started on port 3000!')
-}) 
+mongoose.connect(process.env.MONGO_URL)
+  .then(async () => {
+    app.listen(process.env.API_PORT, () => console.log(`Server running at http://localhost:${process.env.API_PORT}`))
+  })
+  .catch(console.error)
