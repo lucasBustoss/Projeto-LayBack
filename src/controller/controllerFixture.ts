@@ -1,42 +1,25 @@
 import Fixture from '@/models/Fixture';
 import serviceFixture from '@/services/serviceFixture';
-import { isNumber, isDate } from '@/utils/helpers/validations';
+import { ok, error, HttpResponse } from '@/utils/helpers/http'
+
+import { Request, Response } from 'express'
 
 class ControllerFixture {
-  async loadPastFixtures (req: any): Promise<Fixture[]> {
-    const { leagueId, homeTeamId, awayTeamId, initialDate, finalDate } = req.query
-
-    //#region Validations
-
-    if (!isNumber(leagueId)) {
-      throw new Error(`O parâmetro 'leagueId' deve ser um número.`)
+  async loadPastFixtures (req: Request, res: Response): Promise<Response<HttpResponse>> {
+    try {
+      const { leagueId, homeTeamId, awayTeamId, initialDate, finalDate } = req.query
+      
+      const fixtures =  await serviceFixture.getPastFixtures(
+        Number(leagueId), 
+        Number(homeTeamId), 
+        Number(awayTeamId), 
+        initialDate, 
+        finalDate)
+      
+      return res.json(ok(fixtures))
+    } catch (err) {
+      return res.json(error(400, err))
     }
-    if (!isNumber(homeTeamId)) {
-      throw new Error(`O parâmetro 'homeTeamId' deve ser um número.`)
-    }
-    if (!isNumber(awayTeamId)) {
-      throw new Error(`O parâmetro 'awayTeamId' deve ser um número.`)
-    }
-
-    if(initialDate && !finalDate) {
-      throw new Error(`É necessário informar a data final.`)
-    }
-
-    if (!initialDate && finalDate) {
-      throw new Error(`É necessário informar a data inicial.`)
-    }
-
-    if(initialDate && !isDate(initialDate)) {
-      throw new Error(`O parâmetro 'initialDate' deve estar no formato 'yyyy-MM-dd'.`)
-    }
-
-    if(finalDate && !isDate(finalDate)) {
-      throw new Error(`O parâmetro 'finalDate' deve estar no formato 'yyyy-MM-dd'.`)
-    }
-
-    //#endregion
-
-    return await serviceFixture.getPastFixtures(leagueId, homeTeamId, awayTeamId, initialDate, finalDate)
   }
 }
 
