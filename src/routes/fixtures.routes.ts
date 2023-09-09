@@ -6,6 +6,6 @@ import { Router } from 'express'
 const fixtureRouter = Router()
 
 fixtureRouter.get('/', validateInput_fixtures_get, controllerFixture.loadPastFixtures)
-fixtureRouter.get('/', validateInput_fixtures_get, controllerFixture.loadLiveFixtures)
+fixtureRouter.get('/live', validateInput_fixtures_get, controllerFixture.loadLiveFixtures)
 
 export default fixtureRouter
