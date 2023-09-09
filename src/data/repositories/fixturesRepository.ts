@@ -1,17 +1,22 @@
 import Fixture from "@/models/Fixture";
-import FixtureToFill from "@/models/FixtureToFill";
 import { FixtureSchema } from "@/models/schemas/schemaFixture";
-import { FixtureToFillSchema } from "@/models/schemas/schemaFixtureToFill";
 
 class RepositoryFixture {
   async getPastFixtures(filters: FixtureFilters): Promise<Fixture[]> {
-    const fixtures = [] as Fixture[]
+    const fixtures = await FixtureSchema.find(filters)
 
     return fixtures
   }
 
   async save(fixtures: Fixture[]): Promise<void> {
-    await FixtureSchema.create(fixtures);
+    for (const fixture of fixtures) {
+      const filter = { id: fixture.id }
+
+      await FixtureSchema.findOneAndUpdate(filter, fixture, {
+        new: true,
+        upsert: true
+      })
+    }
   }
 
 }
