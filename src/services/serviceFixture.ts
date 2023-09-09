@@ -1,8 +1,9 @@
 import Fixture from "@/models/Fixture";
+import repositoryFixture from '@/data/repositories/fixturesRepository'
 
 class ServiceFixture {
-  async getPastFixtures(leagueId: number, homeTeamId: number, awayTeamId: number, initialDate: Date, finalDate: Date) {
-    const fixtures = [] as Fixture[]
+  async getPastFixtures(filters: FixtureFilters) {
+    const fixtures = await repositoryFixture.getPastFixtures(filters);
 
     return fixtures;
   }
