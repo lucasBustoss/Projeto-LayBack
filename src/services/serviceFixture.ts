@@ -10,7 +10,7 @@ class ServiceFixture {
   }
   
   async getLiveFixtures(filters: FixtureFilters): Promise<Fixture[]> {
-    const fixtures = await footballApi.getLiveFixtures()
+    const fixtures = await footballApi.getLiveFixtures(filters)
 
     return fixtures;
   }
