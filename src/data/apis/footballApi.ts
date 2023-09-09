@@ -15,7 +15,7 @@ class FootballApi {
 
   //#region FillFixtures
 
-  async fillFixtures(date: string): Promise<Fixture[]> {
+  async saveFixtures(date: string): Promise<Fixture[]> {
     try {
       const config = {
         params: {

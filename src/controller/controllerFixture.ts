@@ -43,11 +43,11 @@ class ControllerFixture {
     }
   }
 
-  async fill (req: Request, res: Response): Promise<Response<HttpResponse>> {
+  async saveFixtures (req: Request, res: Response): Promise<Response<HttpResponse>> {
     try {
-      const fixtures =  await serviceFixture.fillFixtures()
+      const fixtures =  await serviceFixture.saveFixtures()
       
-      return res.json(ok(fixtures))
+      return res.json(ok('Fixtures saved'))
     } catch (err) {
       console.log(err.message)
       return res.json(error(400, err))

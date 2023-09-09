@@ -1,7 +1,7 @@
 import Fixture from "@/models/Fixture";
 import repositoryFixture from '@/data/repositories/fixturesRepository'
 import footballApi from "@/data/apis/footballApi";
-import { addDays, format } from "date-fns";
+import { format, subDays } from "date-fns";
 
 class ServiceFixture {
   async getPastFixtures(filters: FixtureFilters) {
@@ -16,14 +16,13 @@ class ServiceFixture {
     return fixtures;
   }
 
-  async fillFixtures(): Promise<Fixture[]> {
-    for (let i = 0; i <= 0; i++) {
-      const date = addDays(new Date(), i);
+  async saveFixtures(): Promise<void> {
+    for (let i = 0; i <= 7; i++) {
+      const date = subDays(new Date(), i);
       
-      const fixtures = await footballApi.fillFixtures(format(date, 'yyyy-MM-dd'))
+      const fixtures = await footballApi.saveFixtures(format(date, 'yyyy-MM-dd'))
 
       await repositoryFixture.save(fixtures)
-      return fixtures
     }
   }
 }
