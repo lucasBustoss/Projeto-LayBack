@@ -6,6 +6,7 @@ import OddsLiveResponse from '@/models/response/OddsLiveResponse';
 import OddsPreMatchResponse from '@/models/response/OddsPreMatchResponse';
 import { round } from '@/utils/helpers/round';
 import axios from 'axios';
+import { format } from 'date-fns';
 
 class FootballApi {
   private readonly api = axios.create({ baseURL: 'https://api-football-v1.p.rapidapi.com/v3' })
@@ -33,7 +34,7 @@ class FootballApi {
       )
 
       if(response && response.data) 
-        return this.getTreatedFixtures(response.data, false, 0, 0, 0);
+        return this.getTreatedFixtures(response.data, false, 0, 0, 0, date);
     } catch (err) {
       console.log(err)
       throw err
@@ -65,7 +66,7 @@ class FootballApi {
       )
 
       if(response && response.data) 
-        return this.getTreatedFixtures(response.data, true, filters.leagueId, filters.homeTeamId, filters.awayTeamId);
+        return this.getTreatedFixtures(response.data, true, filters.leagueId, filters.homeTeamId, filters.awayTeamId, format(new Date(), 'yyyy-MM-dd'));
     } catch (err) {
       console.log(err)
       throw err
@@ -77,7 +78,8 @@ class FootballApi {
     isLiveMatch: boolean,
     leagueId: number, 
     homeTeamId: number, 
-    awayTeamId: number): Promise<Fixture[]> {
+    awayTeamId: number,
+    date: string): Promise<Fixture[]> {
     let apiFixtures = data.response
 
     if(homeTeamId && homeTeamId !== 0)
@@ -91,19 +93,13 @@ class FootballApi {
 
     if(isLiveMatch) 
       odds = await this.getLiveOdds(leagueId);
+    else 
+      odds = await this.getPreMatchOdds(date)
 
     const fixtures = [] as Fixture[]
     
     for (const apiFixture of apiFixtures) {
-      let oddMatch;
-      
-      if (!isLiveMatch)
-      oddMatch = await this.getPreMatchOdds(apiFixture.fixture.id)
-      else {
-        oddMatch = odds.find(o => o.fixtureId === apiFixture.fixture.id)
-      }
-      
-
+      const oddMatch = odds.find(o => o.fixtureId === apiFixture.fixture.id)
       const fixture = new Fixture(apiFixture, oddMatch)
       fixtures.push(fixture)
     }
@@ -183,14 +179,14 @@ class FootballApi {
 
   //#region PreMatchOdds
 
-  private async getPreMatchOdds(fixtureId: number): Promise<Odds> {
+  private async getPreMatchOdds(date: string): Promise<Odds[]> {
     try {
       const config = {
         params: {
           bet: 1,
           bookmaker: 8,
           timezone: this.timezone,
-          fixture: fixtureId
+          date
         },
         headers: {
           "X-RapidAPI-Key": this.apiKey
@@ -210,41 +206,46 @@ class FootballApi {
     }
   }
 
-  private getTreatedPreMatchOdds(data: ApiResponse<OddsPreMatchResponse>): Odds {
+  private getTreatedPreMatchOdds(data: ApiResponse<OddsPreMatchResponse>): Odds[] {
     const apiOdds = data.response
 
     if(!apiOdds || apiOdds.length === 0) 
       return null
 
-    const { fixture, bookmakers } = apiOdds[0]
-    
-    if (!fixture) 
-      return null;
-  
-    if (!bookmakers || bookmakers.length === 0)
-      return null;
+    const oddsTreated = [] as Odds[]
+    for (const apiOdd of apiOdds) {
+      const { fixture, bookmakers } = apiOdd
       
-    const oddsBets = bookmakers[0].bets
+      if (!fixture) 
+        return null;
     
-    if(!oddsBets || oddsBets.length === 0)
-      return null;
+      if (!bookmakers || bookmakers.length === 0)
+        return null;
+        
+      const oddsBets = bookmakers[0].bets
+      
+      if(!oddsBets || oddsBets.length === 0)
+        return null;
 
-    const odds = oddsBets[0].values
-    
-    if(!odds || odds.length === 0)
-      return null;
+      const odds = oddsBets[0].values
+      
+      if(!odds || odds.length === 0)
+        return null;
 
-    const homeOdds = odds.find(ov => ov.value === 'Home')
-    const drawOdds = odds.find(ov => ov.value === 'Draw')
-    const awayOdds = odds.find(ov => ov.value === 'Away')
+      const homeOdds = odds.find(ov => ov.value === 'Home')
+      const drawOdds = odds.find(ov => ov.value === 'Draw')
+      const awayOdds = odds.find(ov => ov.value === 'Away')
 
-    const oddsLive = new Odds()
-    oddsLive.fixtureId = fixture.id
-    oddsLive.homeOdds = homeOdds ? round(Number(homeOdds.odd)) : 0
-    oddsLive.drawOdds = drawOdds ? round(Number(drawOdds.odd)) : 0
-    oddsLive.awayOdds = awayOdds ? round(Number(awayOdds. odd)) : 0
+      const oddsLive = new Odds()
+      oddsLive.fixtureId = fixture.id
+      oddsLive.homeOdds = homeOdds ? round(Number(homeOdds.odd)) : 0
+      oddsLive.drawOdds = drawOdds ? round(Number(drawOdds.odd)) : 0
+      oddsLive.awayOdds = awayOdds ? round(Number(awayOdds. odd)) : 0
 
-    return oddsLive
+      oddsTreated.push(oddsLive)
+    }
+
+    return oddsTreated
   }
 
   //#endregion

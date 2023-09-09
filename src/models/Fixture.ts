@@ -5,14 +5,14 @@ import Odds from "./Odds";
 
 export default class Fixture {
   private id: number
-  private league: League;
-  private homeTeamGoals: number;
-  private awayTeamGoals: number;
-  private homeTeam: Team;
-  private awayTeam: Team;
-  private homeOdds: number;
-  private awayOdds: number;
-  private drawOdds: number;
+  private league: League
+  private homeTeamGoals: number
+  private awayTeamGoals: number
+  private homeTeam: Team
+  private awayTeam: Team
+  private homeOdds: number
+  private awayOdds: number
+  private drawOdds: number
 
   constructor(apiFixture: FixtureResponse, odds: Odds) {
     this.id = apiFixture.fixture.id
@@ -29,8 +29,8 @@ export default class Fixture {
     this.awayTeam.id = apiFixture.teams.away.id
     this.awayTeam.name = apiFixture.teams.away.name
 
-    this.homeTeamGoals = apiFixture.goals.home
-    this.awayTeamGoals = apiFixture.goals.away
+    this.homeTeamGoals = apiFixture.goals.home ?? -1
+    this.awayTeamGoals = apiFixture.goals.away ?? -1
 
     this.homeOdds = odds ? odds.homeOdds : 0
     this.drawOdds = odds ? odds.drawOdds: 0
