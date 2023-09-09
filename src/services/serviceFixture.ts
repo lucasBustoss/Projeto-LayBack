@@ -2,15 +2,16 @@ import Fixture from "@/models/Fixture";
 import repositoryFixture from '@/data/repositories/fixturesRepository'
 import footballApi from "@/data/apis/footballApi";
 import { format, subDays } from "date-fns";
+import { FixtureLiveFilters, FixturePastFilters } from "@/models/filters";
 
 class ServiceFixture {
-  async getPastFixtures(filters: FixtureFilters) {
+  async getPastFixtures(filters: FixturePastFilters) {
     const fixtures = await repositoryFixture.getPastFixtures(filters);
 
     return fixtures;
   }
   
-  async getLiveFixtures(filters: FixtureFilters): Promise<Fixture[]> {
+  async getLiveFixtures(filters: FixtureLiveFilters): Promise<Fixture[]> {
     const fixtures = await footballApi.getLiveFixtures(filters)
 
     return fixtures;

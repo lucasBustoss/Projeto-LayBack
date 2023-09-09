@@ -1,10 +1,12 @@
 import Fixture from '@/models/Fixture';
 import Odds from '@/models/Odds';
+import { FixtureLiveFilters } from '@/models/filters';
 import ApiResponse from '@/models/response/ApiResponse';
 import FixtureResponse from '@/models/response/FixtureResponse';
 import OddsLiveResponse from '@/models/response/OddsLiveResponse';
 import OddsPreMatchResponse from '@/models/response/OddsPreMatchResponse';
 import { round } from '@/utils/helpers/round';
+
 import axios from 'axios';
 import { format } from 'date-fns';
 
@@ -45,7 +47,7 @@ class FootballApi {
 
   //#region LiveFixtures
 
-  async getLiveFixtures(filters: FixtureFilters): Promise<Fixture[]> {
+  async getLiveFixtures(filters: FixtureLiveFilters): Promise<Fixture[]> {
     try {
       const filterLeague = filters.leagueId ? filters.leagueId : null
 

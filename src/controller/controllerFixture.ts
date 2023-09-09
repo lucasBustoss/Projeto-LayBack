@@ -1,5 +1,5 @@
 import serviceFixture from '@/services/serviceFixture';
-import { getFilters } from '@/utils/helpers/filters';
+import { getLiveFilters, getPastFilters } from '@/utils/helpers/filters';
 import { ok, error, HttpResponse } from '@/utils/helpers/http'
 
 import { Request, Response } from 'express'
@@ -8,7 +8,7 @@ class ControllerFixture {
   async loadPastFixtures (req: Request, res: Response): Promise<Response<HttpResponse>> {
     try {
       const { leagueId, homeTeamId, awayTeamId, initialDate, finalDate } = req.query
-      const filters = getFilters(
+      const filters = getPastFilters(
         Number(leagueId), 
         Number(homeTeamId), 
         Number(awayTeamId), 
@@ -19,26 +19,24 @@ class ControllerFixture {
       
       return res.json(ok(fixtures))
     } catch (err) {
-      console.log(err.message)
+      console.log(err)
       return res.json(error(400, err))
     }
   }
 
   async loadLiveFixtures (req: Request, res: Response): Promise<Response<HttpResponse>> {
     try {
-      const { leagueId, homeTeamId, awayTeamId, initialDate, finalDate } = req.query
-      const filters = getFilters(
+      const { leagueId, homeTeamId, awayTeamId } = req.query
+      const filters = getLiveFilters(
         Number(leagueId), 
         Number(homeTeamId), 
-        Number(awayTeamId), 
-        initialDate ? initialDate.toString() : null, 
-        finalDate ? finalDate.toString() : null)
+        Number(awayTeamId))
 
       const fixtures =  await serviceFixture.getLiveFixtures(filters)
       
       return res.json(ok(fixtures))
     } catch (err) {
-      console.log(err.message)
+      console.log(err)
       return res.json(error(400, err))
     }
   }
@@ -49,7 +47,7 @@ class ControllerFixture {
       
       return res.json(ok('Fixtures saved'))
     } catch (err) {
-      console.log(err.message)
+      console.log(err)
       return res.json(error(400, err))
     }
   }

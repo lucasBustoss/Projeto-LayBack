@@ -7,7 +7,7 @@ import { format, parseISO } from "date-fns";
 export default class Fixture {
   id: number
   private league: League
-  private date: string
+  private date: Date
   private homeTeamGoals: number
   private awayTeamGoals: number
   private homeTeam: Team
@@ -18,7 +18,7 @@ export default class Fixture {
 
   constructor(apiFixture: FixtureResponse, odds: Odds) {
     this.id = apiFixture.fixture.id
-    this.date = format(parseISO(apiFixture.fixture.date), 'yyyy-MM-dd')
+    this.date = parseISO(apiFixture.fixture.date)
 
     this.league = new League()
     this.league.id = apiFixture.league.id   
