@@ -45,7 +45,7 @@ class ControllerFixture {
 
   async saveFixtures (req: Request, res: Response): Promise<Response<HttpResponse>> {
     try {
-      const fixtures =  await serviceFixture.saveFixtures()
+      await serviceFixture.saveFixtures()
       
       return res.json(ok('Fixtures saved'))
     } catch (err) {
