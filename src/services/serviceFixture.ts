@@ -1,5 +1,6 @@
 import Fixture from "@/models/Fixture";
 import repositoryFixture from '@/data/repositories/fixturesRepository'
+import footballApi from "@/data/apis/footballApi";
 
 class ServiceFixture {
   async getPastFixtures(filters: FixtureFilters) {
@@ -8,8 +9,8 @@ class ServiceFixture {
     return fixtures;
   }
   
-  async getLiveFixtures(leagueId: number, homeTeamId: number, awayTeamId: number): Promise<Fixture[]> {
-    const fixtures = [] as Fixture[]
+  async getLiveFixtures(filters: FixtureFilters): Promise<Fixture[]> {
+    const fixtures = await footballApi.getLiveFixtures()
 
     return fixtures;
   }
