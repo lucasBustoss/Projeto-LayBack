@@ -7,6 +7,7 @@ export default class FixtureResponse {
 
 class FixtureApi {
   id: number
+  date: string
 }
 
 class LeagueApi {

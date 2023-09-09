@@ -29,6 +29,10 @@ const FixtureSchema = new mongoose.Schema(
       type: Number,
       required: true
     },
+    date: {
+      type: String,
+      required: true
+    },
     league: LeagueSchema,
     homeTeam: TeamSchema,
     awayTeam: TeamSchema,
