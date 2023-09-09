@@ -12,6 +12,38 @@ class FootballApi {
   private readonly apiKey = process.env.FOOTBALL_API_KEY
   private readonly timezone = 'America/Sao_Paulo'
 
+  //#region FillFixtures
+
+  async fillFixtures(date: string): Promise<Fixture[]> {
+    try {
+      const config = {
+        params: {
+          timezone: this.timezone,
+          date,
+          status: 'FT'
+        },
+        headers: {
+          "X-RapidAPI-Key": this.apiKey
+        }
+      }
+
+      const response = await this.api.get<ApiResponse<FixtureResponse>>(
+        '/fixtures',
+        config
+      )
+
+      if(response && response.data) 
+        return this.getTreatedFixtures(response.data, false, 0, 0, 0);
+    } catch (err) {
+      console.log(err)
+      throw err
+    }
+  }
+
+  //#endregion
+
+  //#region LiveFixtures
+
   async getLiveFixtures(filters: FixtureFilters): Promise<Fixture[]> {
     try {
       const filterLeague = filters.leagueId ? filters.leagueId : null
@@ -59,13 +91,18 @@ class FootballApi {
 
     if(isLiveMatch) 
       odds = await this.getLiveOdds(leagueId);
-    else 
-      odds = await this.getPreMatchOdds(leagueId)
 
     const fixtures = [] as Fixture[]
     
     for (const apiFixture of apiFixtures) {
-      const oddMatch = odds.find(o => o.fixtureId === apiFixture.fixture.id)
+      let oddMatch;
+      
+      if (!isLiveMatch)
+      oddMatch = await this.getPreMatchOdds(apiFixture.fixture.id)
+      else {
+        oddMatch = odds.find(o => o.fixtureId === apiFixture.fixture.id)
+      }
+      
 
       const fixture = new Fixture(apiFixture, oddMatch)
       fixtures.push(fixture)
@@ -73,6 +110,8 @@ class FootballApi {
 
     return fixtures
   }
+
+  //#endregion
 
   //#region LiveOdds
 
@@ -144,10 +183,68 @@ class FootballApi {
 
   //#region PreMatchOdds
 
-  private async getPreMatchOdds(leagueId: number): Promise<Odds[]> {
-    const odds = [] as Odds[]
+  private async getPreMatchOdds(fixtureId: number): Promise<Odds> {
+    try {
+      const config = {
+        params: {
+          bet: 1,
+          bookmaker: 8,
+          timezone: this.timezone,
+          fixture: fixtureId
+        },
+        headers: {
+          "X-RapidAPI-Key": this.apiKey
+        }
+      }
 
-    return odds
+      const response = await this.api.get<ApiResponse<OddsPreMatchResponse>>(
+        '/odds',
+        config
+      )
+        
+      if(response && response.data) 
+        return this.getTreatedPreMatchOdds(response.data);
+    } catch (err) {
+      console.log(err)
+      throw err
+    }
+  }
+
+  private getTreatedPreMatchOdds(data: ApiResponse<OddsPreMatchResponse>): Odds {
+    const apiOdds = data.response
+
+    if(!apiOdds || apiOdds.length === 0) 
+      return null
+
+    const { fixture, bookmakers } = apiOdds[0]
+    
+    if (!fixture) 
+      return null;
+  
+    if (!bookmakers || bookmakers.length === 0)
+      return null;
+      
+    const oddsBets = bookmakers[0].bets
+    
+    if(!oddsBets || oddsBets.length === 0)
+      return null;
+
+    const odds = oddsBets[0].values
+    
+    if(!odds || odds.length === 0)
+      return null;
+
+    const homeOdds = odds.find(ov => ov.value === 'Home')
+    const drawOdds = odds.find(ov => ov.value === 'Draw')
+    const awayOdds = odds.find(ov => ov.value === 'Away')
+
+    const oddsLive = new Odds()
+    oddsLive.fixtureId = fixture.id
+    oddsLive.homeOdds = homeOdds ? round(Number(homeOdds.odd)) : 0
+    oddsLive.drawOdds = drawOdds ? round(Number(drawOdds.odd)) : 0
+    oddsLive.awayOdds = awayOdds ? round(Number(awayOdds. odd)) : 0
+
+    return oddsLive
   }
 
   //#endregion

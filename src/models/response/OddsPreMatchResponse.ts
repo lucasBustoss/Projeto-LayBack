@@ -1,5 +1,10 @@
 export default class OddsPreMatchResponse {
   bookmakers: Bookmakers[]
+  fixture: FixtureOdds
+}
+
+class FixtureOdds {
+  id: number
 }
 
 class Bookmakers {

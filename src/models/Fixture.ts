@@ -10,8 +10,8 @@ export default class Fixture {
   private awayTeamGoals: number;
   private homeTeam: Team;
   private awayTeam: Team;
-  private homeTeamOdds: number;
-  private awayTeamOdds: number;
+  private homeOdds: number;
+  private awayOdds: number;
   private drawOdds: number;
 
   constructor(apiFixture: FixtureResponse, odds: Odds) {
@@ -32,8 +32,8 @@ export default class Fixture {
     this.homeTeamGoals = apiFixture.goals.home
     this.awayTeamGoals = apiFixture.goals.away
 
-    this.homeTeamOdds = odds ? odds.homeOdds : 0
+    this.homeOdds = odds ? odds.homeOdds : 0
     this.drawOdds = odds ? odds.drawOdds: 0
-    this.awayTeamOdds = odds ? odds.awayOdds: 0
+    this.awayOdds = odds ? odds.awayOdds: 0
   }
 }

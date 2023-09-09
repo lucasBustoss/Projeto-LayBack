@@ -42,6 +42,17 @@ class ControllerFixture {
       return res.json(error(400, err))
     }
   }
+
+  async fill (req: Request, res: Response): Promise<Response<HttpResponse>> {
+    try {
+      const fixtures =  await serviceFixture.fillFixtures()
+      
+      return res.json(ok(fixtures))
+    } catch (err) {
+      console.log(err.message)
+      return res.json(error(400, err))
+    }
+  }
 }
 
 export default new ControllerFixture()

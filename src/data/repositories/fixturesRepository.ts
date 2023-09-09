@@ -6,6 +6,10 @@ class RepositoryFixture {
 
     return fixtures
   }
+
+  async save(fixtures: Fixture[]): Promise<void> {
+    
+  }
 }
 
 export default new RepositoryFixture()
