@@ -16,6 +16,6 @@ app.use('/api', routes);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
 mongoose.connect(process.env.MONGO_URL)
   .then(async () => {
-    app.listen(process.env.API_PORT, () => console.log(`Server running at http://localhost:${process.env.API_PORT}`))
+    app.listen(process.env.PORT, () => console.log(`Server running at http://localhost:${process.env.PORT}`))
   })
   .catch(console.error)
