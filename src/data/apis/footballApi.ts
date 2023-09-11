@@ -101,12 +101,13 @@ class FootballApi {
     const fixtures = [] as Fixture[]
     
     for (const apiFixture of apiFixtures) {
+      let oddMatch;
       if(odds && odds.length > 0) {
         const oddMatch = odds.find(o => o.fixtureId === apiFixture.fixture.id)
-        
-        const fixture = new Fixture(apiFixture, oddMatch)
-        fixtures.push(fixture)
       }
+      
+      const fixture = new Fixture(apiFixture, oddMatch)
+      fixtures.push(fixture)
     }
 
     return fixtures
