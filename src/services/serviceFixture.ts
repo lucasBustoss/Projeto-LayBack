@@ -25,7 +25,7 @@ class ServiceFixture {
       
       const fixtures = await footballApi.saveFixtures(format(date, 'yyyy-MM-dd'))
 
-      await repositoryFixture.save(fixtures)
+      // await repositoryFixture.save(fixtures)
       console.log('salvei')
     }
 
