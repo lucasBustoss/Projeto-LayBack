@@ -1,5 +1,7 @@
 import './config/module-alias'
 import * as dotenv from 'dotenv';
+import cors from 'cors';
+
 const { specs, swaggerUi } = require('./config/swagger');
 
 const path = '.env';
@@ -12,6 +14,8 @@ import mongoose from 'mongoose'
 
 const app = express();
 
+app.use(cors())
+app.use(express.json())
 app.use('/api', routes);
 app.use('/', swaggerUi.serve, swaggerUi.setup(specs));
 mongoose.connect(process.env.MONGO_URL)
