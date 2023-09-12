@@ -5,7 +5,7 @@ export type HttpResponse<T = any> = {
   result: T
 }
 
-export const ok = <T = any> (data: T): HttpResponse<T> => ({
+export const ok = <T = any> (data?: T): HttpResponse<T> => ({
   statusCode: 200,
   result: data
 })

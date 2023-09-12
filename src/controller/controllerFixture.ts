@@ -43,10 +43,10 @@ class ControllerFixture {
 
   async saveFixtures (req: Request, res: Response): Promise<Response<HttpResponse>> {
     try {
-      const response = await serviceFixture.saveFixtures()
+      await serviceFixture.saveFixtures()
       console.log('controller')
       
-      return res.json(ok(response))
+      return res.json(ok())
     } catch (err) {
       console.log(err)
       return res.json(error(400, err))
