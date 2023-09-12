@@ -19,17 +19,13 @@ class ServiceFixture {
 
   async saveFixtures(): Promise<string> {
     for (let i = 0; i <= 3; i++) {
-      console.log(i)
-      console.log(new Date())
       const date = subDays(new Date(), i);
       
       const fixtures = await footballApi.saveFixtures(format(date, 'yyyy-MM-dd'))
 
       await repositoryFixture.save(fixtures)
-      console.log('salvei')
     }
 
-    console.log('termineiService')
     return 'Fixtures saved'
   }
 }
