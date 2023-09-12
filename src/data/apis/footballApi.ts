@@ -194,7 +194,6 @@ class FootballApi {
       const config = {
         params: {
           bet: 1,
-          bookmaker: 8,
           timezone: this.timezone,
           date,
           page
@@ -210,7 +209,6 @@ class FootballApi {
       )
         
       if(response && response.data) {
-        console.log(response.data)
         odds.push(... await this.getTreatedPreMatchOdds(response.data));
         
         if(response.data.paging.current < response.data.paging.total) {
@@ -240,8 +238,16 @@ class FootballApi {
     
       if (!bookmakers || bookmakers.length === 0)
         return null;
+
+      let bookmaker = bookmakers.find(b => b.id === 8)
+
+      if(!bookmaker) {
+        bookmaker = bookmakers.find(b => b.id === 3)
+      }
+
+      if (!bookmaker) bookmaker = bookmakers[0]
         
-      const oddsBets = bookmakers[0].bets
+      const oddsBets = bookmaker.bets
       
       if(!oddsBets || oddsBets.length === 0)
         return null;
