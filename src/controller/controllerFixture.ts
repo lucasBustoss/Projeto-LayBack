@@ -46,7 +46,7 @@ class ControllerFixture {
       await serviceFixture.saveFixtures()
       console.log('controller')
       
-      return res.json(ok('Fixtures saved'))
+      return res.json(ok({ message: 'Fixtures saved' }))
     } catch (err) {
       console.log(err)
       return res.json(error(400, err))
