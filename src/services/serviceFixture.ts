@@ -18,7 +18,7 @@ class ServiceFixture {
   }
 
   async saveFixtures(): Promise<string> {
-    for (let i = 0; i <= 3; i++) {
+    for (let i = 0; i <= 7; i++) {
       const date = subDays(new Date(), i);
       
       const fixtures = await footballApi.saveFixtures(format(date, 'yyyy-MM-dd'))
