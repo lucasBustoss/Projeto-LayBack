@@ -18,7 +18,7 @@ class ServiceFixture {
   }
 
   async saveFixtures(): Promise<string> {
-    for (let i = 0; i <= 7; i++) {
+    for (let i = 0; i <= 3; i++) {
       console.log(i)
       console.log(new Date())
       const date = subDays(new Date(), i);
