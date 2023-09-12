@@ -7,7 +7,7 @@ const fixtureRouter = Router()
 
 fixtureRouter.get('/', validateInput_fixtures_get, controllerFixture.loadPastFixtures)
 fixtureRouter.get('/live', validateInput_fixtures_get, controllerFixture.loadLiveFixtures)
-fixtureRouter.post('/', controllerFixture.saveFixtures)
+fixtureRouter.get('/save', controllerFixture.saveFixtures)
 
 
 export default fixtureRouter

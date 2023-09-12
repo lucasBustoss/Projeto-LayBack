@@ -1,11 +1,12 @@
 /**
  * @swagger
- * /api/fixtures:
- *   post:
+ * /api/fixtures/save:
+ *   get:
  *     summary: Busca e salva todas as partidas disponíveis entre hoje e 7 dias atrás.
  *     responses:
  *       200:
  *         description: Sucesso. Retorna uma mensagem de sucesso.
+ * /api/fixtures/:
  *   get:
  *     summary: Retorna as partidas salvas no banco de dados.
  *     parameters:
