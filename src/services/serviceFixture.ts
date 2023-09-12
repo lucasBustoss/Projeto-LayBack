@@ -17,7 +17,7 @@ class ServiceFixture {
     return fixtures;
   }
 
-  async saveFixtures(): Promise<void> {
+  async saveFixtures(): Promise<string> {
     for (let i = 0; i <= 7; i++) {
       console.log(i)
       console.log(new Date())
@@ -30,6 +30,7 @@ class ServiceFixture {
     }
 
     console.log('termineiService')
+    return 'Fixtures saved'
   }
 }
 

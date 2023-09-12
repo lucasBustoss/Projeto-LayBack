@@ -15,7 +15,7 @@ class ControllerFixture {
         initialDate ? initialDate.toString() : null, 
         finalDate ? finalDate.toString() : null)
 
-      const fixtures =  await serviceFixture.getPastFixtures(filters)
+      const fixtures = await serviceFixture.getPastFixtures(filters)
       
       return res.json(ok(fixtures))
     } catch (err) {
@@ -32,7 +32,7 @@ class ControllerFixture {
         Number(homeTeamId), 
         Number(awayTeamId))
 
-      const fixtures =  await serviceFixture.getLiveFixtures(filters)
+      const fixtures = await serviceFixture.getLiveFixtures(filters)
       
       return res.json(ok(fixtures))
     } catch (err) {
@@ -43,10 +43,10 @@ class ControllerFixture {
 
   async saveFixtures (req: Request, res: Response): Promise<Response<HttpResponse>> {
     try {
-      await serviceFixture.saveFixtures()
+      const response = await serviceFixture.saveFixtures()
       console.log('controller')
       
-      return res.json(ok({ message: 'Fixtures saved' }))
+      return res.json(ok(response))
     } catch (err) {
       console.log(err)
       return res.json(error(400, err))
