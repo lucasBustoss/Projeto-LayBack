@@ -96,12 +96,12 @@ class FootballApi {
     if(isLiveMatch) 
       odds = await this.getLiveOdds(leagueId);
     else 
-      odds = await this.getPreMatchOdds(date)
+      odds = await this.getPreMatchOdds(date, 1)
 
     const fixtures = [] as Fixture[]
-    
     for (const apiFixture of apiFixtures) {
       let oddMatch;
+
       if(odds && odds.length > 0) {
         oddMatch = odds.find(o => o.fixtureId === apiFixture.fixture.id)
       }
@@ -185,14 +185,19 @@ class FootballApi {
 
   //#region PreMatchOdds
 
-  private async getPreMatchOdds(date: string): Promise<Odds[]> {
+  private async getPreMatchOdds(date: string, page: number, odds?: Odds[]): Promise<Odds[]> {
     try {
+      if (!odds) {
+        odds = [] as Odds[]
+      }
+
       const config = {
         params: {
           bet: 1,
           bookmaker: 8,
           timezone: this.timezone,
-          date
+          date,
+          page
         },
         headers: {
           "X-RapidAPI-Key": this.apiKey
@@ -204,8 +209,16 @@ class FootballApi {
         config
       )
         
-      if(response && response.data) 
-        return this.getTreatedPreMatchOdds(response.data);
+      if(response && response.data) {
+        console.log(response.data)
+        odds.push(... await this.getTreatedPreMatchOdds(response.data));
+        
+        if(response.data.paging.current < response.data.paging.total) {
+          await this.getPreMatchOdds(date, page + 1, odds)
+        }
+
+        return odds;
+      }
     } catch (err) {
       console.log(err)
       throw err
