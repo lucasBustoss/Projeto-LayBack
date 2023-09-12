@@ -14,14 +14,15 @@ class RepositoryFixture {
   }
 
   async save(fixtures: Fixture[]): Promise<void> {
-    for (const fixture of fixtures) {
-      const filter = { id: fixture.id }
-
-      await FixtureSchema.findOneAndUpdate(filter, fixture, {
-        new: true,
-        upsert: true
-      })
-    }
+    const updateData = fixtures.map(fixture => ({
+      updateOne: {
+        filter: { id: fixture.id },
+        update: { $set: fixture },
+        upsert: true,
+      },
+    }));
+    
+    await FixtureSchema.bulkWrite(updateData);
   }
 
 }
